@@ -1,0 +1,24 @@
+{
+  "name": "2ScaleFab Kit Tracker",
+  "short_name": "Kit Tracker",
+  "description": "Assembly parts kit tracker for 2 Scale Fabrications",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#2C1810",
+  "theme_color": "#2C1810",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
