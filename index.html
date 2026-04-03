@@ -11,129 +11,93 @@
 <link rel="apple-touch-icon" href="icon-192.png"/>
 <title>2ScaleFab Kit Tracker</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap');
-  :root{
-    --soil:#2C1810;--field:#4A7C59;--field-light:#6FAE7F;--wheat:#D4A843;
-    --wheat-light:#F0C96A;--cream:#FAF6EF;--paper:#F2EDE4;--ink:#1A1208;
-    --muted:#7A6E62;--danger:#C0392B;--danger-bg:#FDECEA;--warn-bg:#FEF9EC;
-    --success-bg:#EEF7F1;--border:rgba(44,24,16,0.12);
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;overflow:hidden;}
-  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);display:flex;flex-direction:column;}
-
-  /* HEADER */
-  .header{
-    background:var(--soil);color:var(--cream);
-    padding:calc(12px + var(--safe-top)) 16px 12px;
-    display:flex;align-items:center;justify-content:space-between;
-    flex-shrink:0;
-  }
-  .hbrand{font-family:'Instrument Serif',serif;font-size:20px;}
-  .hsub{font-family:'DM Mono',monospace;font-size:9px;color:var(--wheat);letter-spacing:.12em;text-transform:uppercase;margin-top:1px;}
-  .hsave{font-size:9px;color:var(--field-light);min-height:11px;transition:opacity .3s;}
-  .hright{font-family:'DM Mono',monospace;font-size:11px;color:var(--wheat-light);text-align:right;}
-
-  /* TOOLBAR */
-  .toolbar{padding:10px 12px;background:var(--paper);border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;}
-  .sw{flex:1;min-width:150px;position:relative;}
-  .sw input{width:100%;padding:8px 10px 8px 30px;border:1px solid var(--border);border-radius:8px;background:var(--cream);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;-webkit-appearance:none;}
-  .sw input:focus{border-color:var(--field);}
-  .si{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;}
-  .cats{display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
-  .cb{font-family:'DM Mono',monospace;font-size:10px;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--cream);color:var(--muted);cursor:pointer;white-space:nowrap;-webkit-appearance:none;}
-  .cb.active{background:var(--soil);color:var(--wheat);border-color:var(--soil);}
-
-  /* SUMMARY */
-  .sumbar{display:flex;border-bottom:1px solid var(--border);background:var(--cream);flex-shrink:0;}
-  .sc{flex:1;padding:8px 4px;text-align:center;border-right:1px solid var(--border);}
-  .sc:last-child{border-right:none;}
-  .sn{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;line-height:1;}
-  .sl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
-
-  /* SCROLLABLE PRODUCT LIST */
-  .plist{
-    flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-    padding:10px 12px;display:flex;flex-direction:column;gap:8px;
-    padding-bottom:calc(80px + var(--safe-bottom));
-  }
-
-  /* PRODUCT CARDS */
-  .pcard{background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
-  .ch{display:flex;align-items:center;padding:12px 12px;cursor:pointer;gap:8px;user-select:none;}
-  .chev{font-size:9px;color:var(--muted);transition:transform .2s;margin-left:auto;flex-shrink:0;}
-  .chev.open{transform:rotate(90deg);}
-  .cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-  .cn{font-size:13px;font-weight:500;flex:1;line-height:1.3;}
-  .cbadge{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:20px;flex-shrink:0;}
-  .br{background:var(--success-bg);color:#2D7A45;}
-  .bm{background:var(--danger-bg);color:var(--danger);}
-  .bw{background:var(--warn-bg);color:#9A6E00;}
-  .be{background:var(--paper);color:var(--muted);}
-  .cbody{display:none;padding:0 12px 14px;}
-  .cbody.open{display:block;}
-  .pl{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;padding-top:2px;}
-  .pr{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--border);font-size:13px;}
-  .pr input[type=checkbox]{width:18px;height:18px;accent-color:var(--field);cursor:pointer;flex-shrink:0;}
-  .pn{flex:1;line-height:1.3;}
-  .pn.done{text-decoration:line-through;color:var(--muted);}
-  .pq{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap;}
-  .pd{font-size:11px;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:4px;border:none;background:none;flex-shrink:0;}
-  .pd:active{background:var(--danger-bg);color:var(--danger);}
-  .ptrack{height:3px;background:var(--paper);border-radius:2px;margin-bottom:8px;overflow:hidden;}
-  .pfill{height:100%;background:var(--field);border-radius:2px;transition:width .3s;}
-  .af{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
-  .af input[type=text]{flex:1;min-width:80px;padding:8px 10px;border:1px dashed var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--cream);color:var(--ink);outline:none;-webkit-appearance:none;}
-  .af input[type=text]:focus{border-color:var(--field);border-style:solid;}
-  .af input[type=number]{width:54px;padding:8px 6px;border:1px dashed var(--border);border-radius:7px;font-family:'DM Mono',monospace;font-size:13px;background:var(--cream);color:var(--ink);outline:none;text-align:center;-webkit-appearance:none;}
-  .btna{padding:8px 14px;background:var(--field);color:white;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;flex-shrink:0;}
-  .btna:active{background:var(--soil);}
-  .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;line-height:1.8;}
-
-  /* FAB */
-  .fab{
-    position:fixed;bottom:calc(20px + var(--safe-bottom));right:16px;
-    background:var(--wheat);color:var(--soil);border:none;border-radius:24px;
-    padding:13px 20px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
-    cursor:pointer;box-shadow:0 3px 16px rgba(44,24,16,.25);z-index:200;
-  }
-  .fab:active{transform:scale(0.97);}
-
-  /* MODAL */
-  .mo{display:none;position:fixed;inset:0;background:rgba(26,18,8,.55);z-index:300;align-items:flex-end;justify-content:center;}
-  .mo.open{display:flex;}
-  .modal{
-    background:var(--cream);border-radius:20px 20px 0 0;
-    padding:24px 20px calc(32px + var(--safe-bottom));
-    width:100%;max-width:560px;
-  }
-  .modal h2{font-family:'Instrument Serif',serif;font-size:22px;margin-bottom:16px;}
-  .modal label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;margin-top:12px;}
-  .modal input,.modal select{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:8px;background:white;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;-webkit-appearance:none;}
-  .modal input:focus,.modal select:focus{border-color:var(--field);}
-  .mbtns{display:flex;gap:10px;margin-top:20px;}
-  .bp{flex:1;padding:13px;background:var(--soil);color:var(--cream);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer;}
-  .bs{padding:13px 18px;background:var(--paper);color:var(--muted);border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer;}
-
-  /* CATEGORY DOTS */
-  .df{background:#4A9C6F;}.dm{background:#8B5E3C;}.dh{background:#D4A843;}
-  .dg{background:#C8963C;}.dt{background:#7A8C7A;}.ds{background:#3C6A8C;}
-  .dsp{background:#8C3C6A;}.dtr{background:#4A5C8C;}.dmi{background:#9A7A5C;}.dp{background:#5C5C5C;}
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap');
+:root{
+  --soil:#2C1810;--field:#4A7C59;--field-light:#6FAE7F;--wheat:#D4A843;
+  --wheat-light:#F0C96A;--cream:#FAF6EF;--paper:#F2EDE4;--ink:#1A1208;
+  --muted:#7A6E62;--danger:#C0392B;--danger-bg:#FDECEA;--warn-bg:#FEF9EC;
+  --success-bg:#EEF7F1;--border:rgba(44,24,16,0.12);
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);display:flex;flex-direction:column;}
+.header{background:var(--soil);color:var(--cream);padding:calc(12px + var(--safe-top)) 16px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.hbrand{font-family:'Instrument Serif',serif;font-size:20px;}
+.hsub{font-family:'DM Mono',monospace;font-size:9px;color:var(--wheat);letter-spacing:.12em;text-transform:uppercase;margin-top:1px;}
+.hsave{font-size:9px;color:var(--field-light);min-height:11px;}
+.hright{font-family:'DM Mono',monospace;font-size:11px;color:var(--wheat-light);text-align:right;}
+.toolbar{padding:10px 12px;background:var(--paper);border-bottom:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;}
+.sw{flex:1;min-width:150px;position:relative;}
+.sw input{width:100%;padding:8px 10px 8px 30px;border:1px solid var(--border);border-radius:8px;background:var(--cream);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;-webkit-appearance:none;}
+.sw input:focus{border-color:var(--field);}
+.si{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;}
+.cats{display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
+.cb{font-family:'DM Mono',monospace;font-size:10px;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--cream);color:var(--muted);cursor:pointer;white-space:nowrap;-webkit-appearance:none;}
+.cb.active{background:var(--soil);color:var(--wheat);border-color:var(--soil);}
+.sumbar{display:flex;border-bottom:1px solid var(--border);background:var(--cream);flex-shrink:0;}
+.sc{flex:1;padding:8px 4px;text-align:center;border-right:1px solid var(--border);}
+.sc:last-child{border-right:none;}
+.sn{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;line-height:1;}
+.sl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+.plist{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px;display:flex;flex-direction:column;gap:8px;padding-bottom:calc(80px + var(--safe-bottom));}
+.pcard{background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.ch{display:flex;align-items:center;padding:12px;cursor:pointer;gap:8px;user-select:none;}
+.chev{font-size:9px;color:var(--muted);transition:transform .2s;margin-left:auto;flex-shrink:0;}
+.chev.open{transform:rotate(90deg);}
+.cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.cn{font-size:13px;font-weight:500;flex:1;line-height:1.3;}
+.cbadge{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:20px;flex-shrink:0;}
+.br{background:var(--success-bg);color:#2D7A45;}
+.bm{background:var(--danger-bg);color:var(--danger);}
+.bw{background:var(--warn-bg);color:#9A6E00;}
+.be{background:var(--paper);color:var(--muted);}
+.cbody{display:none;padding:0 12px 14px;}
+.cbody.open{display:block;}
+.pl{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;padding-top:2px;}
+.pr{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--border);font-size:13px;}
+.pr input[type=checkbox]{width:18px;height:18px;accent-color:var(--field);cursor:pointer;flex-shrink:0;}
+.pn{flex:1;line-height:1.3;}
+.pn.done{text-decoration:line-through;color:var(--muted);}
+.pq{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap;}
+.pd{font-size:13px;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:4px;border:none;background:none;flex-shrink:0;}
+.pd:active{background:var(--danger-bg);color:var(--danger);}
+.ptrack{height:3px;background:var(--paper);border-radius:2px;margin-bottom:8px;overflow:hidden;}
+.pfill{height:100%;background:var(--field);border-radius:2px;transition:width .3s;}
+.af{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.af input[type=text]{flex:1;min-width:80px;padding:8px 10px;border:1px dashed var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--cream);color:var(--ink);outline:none;-webkit-appearance:none;}
+.af input[type=text]:focus{border-color:var(--field);border-style:solid;}
+.af input[type=number]{width:54px;padding:8px 6px;border:1px dashed var(--border);border-radius:7px;font-family:'DM Mono',monospace;font-size:13px;background:var(--cream);color:var(--ink);outline:none;text-align:center;-webkit-appearance:none;}
+.btna{padding:8px 14px;background:var(--field);color:white;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;flex-shrink:0;}
+.btna:active{background:var(--soil);}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;line-height:1.8;}
+.fab{position:fixed;bottom:calc(20px + var(--safe-bottom));right:16px;background:var(--wheat);color:var(--soil);border:none;border-radius:24px;padding:13px 20px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 3px 16px rgba(44,24,16,.25);z-index:200;}
+.fab:active{transform:scale(0.97);}
+.mo{display:none;position:fixed;inset:0;background:rgba(26,18,8,.55);z-index:300;align-items:flex-end;justify-content:center;}
+.mo.open{display:flex;}
+.modal{background:var(--cream);border-radius:20px 20px 0 0;padding:24px 20px calc(32px + var(--safe-bottom));width:100%;max-width:560px;}
+.modal h2{font-family:'Instrument Serif',serif;font-size:22px;margin-bottom:16px;}
+.modal label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:5px;margin-top:12px;}
+.modal input,.modal select{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:8px;background:white;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--ink);outline:none;-webkit-appearance:none;}
+.modal input:focus,.modal select:focus{border-color:var(--field);}
+.mbtns{display:flex;gap:10px;margin-top:20px;}
+.bp{flex:1;padding:13px;background:var(--soil);color:var(--cream);border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer;}
+.bs{padding:13px 18px;background:var(--paper);color:var(--muted);border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer;}
+.df{background:#4A9C6F;}.dm{background:#8B5E3C;}.dh{background:#D4A843;}
+.dg{background:#C8963C;}.dt{background:#7A8C7A;}.ds{background:#3C6A8C;}
+.dsp{background:#8C3C6A;}.dtr{background:#4A5C8C;}.dmi{background:#9A7A5C;}.dp{background:#5C5C5C;}
 </style>
 </head>
 <body>
-
 <div class="header">
   <div>
     <div class="hbrand">2ScaleFab</div>
     <div class="hsub">Kit Tracker</div>
     <div class="hsave" id="hsave"></div>
   </div>
-  <div class="hright" id="hright">Loading...</div>
+  <div class="hright" id="hright">0/0 ready</div>
 </div>
-
 <div class="toolbar">
   <div class="sw">
     <span class="si">&#9906;</span>
@@ -141,17 +105,14 @@
   </div>
   <div class="cats" id="cats"></div>
 </div>
-
 <div class="sumbar">
   <div class="sc"><div class="sn" id="st">0</div><div class="sl">Products</div></div>
   <div class="sc"><div class="sn" style="color:#2D7A45" id="sr">0</div><div class="sl">Ready</div></div>
   <div class="sc"><div class="sn" style="color:#C0392B" id="sm">0</div><div class="sl">Missing</div></div>
   <div class="sc"><div class="sn" style="color:#9A6E00" id="sno">0</div><div class="sl">No kit</div></div>
 </div>
-
 <div class="plist" id="plist"></div>
 <button class="fab" onclick="openMo()">+ Add Product</button>
-
 <div class="mo" id="mo" onclick="if(event.target===this)closeMo()">
   <div class="modal">
     <h2>Add product</h2>
@@ -176,302 +137,352 @@
     </div>
   </div>
 </div>
-
 <script>
-const SK='2scalefab_v3';
-const CATS={
-  fertilizer:{l:'Fertilizer',d:'df'},manure:{l:'Manure',d:'dm'},
-  hay:{l:'Hay/Forage',d:'dh'},grain:{l:'Grain',d:'dg'},
-  tillage:{l:'Tillage',d:'dt'},semi:{l:'Semi',d:'ds'},
-  specialty:{l:'Specialty',d:'dsp'},trucks:{l:'Trucks',d:'dtr'},
-  misc:{l:'Misc',d:'dmi'},parts:{l:'Parts',d:'dp'}
+var SK = '2scalefab_v3';
+var CATS = {
+  fertilizer: {l:'Fertilizer', d:'df'},
+  manure:     {l:'Manure',     d:'dm'},
+  hay:        {l:'Hay/Forage', d:'dh'},
+  grain:      {l:'Grain',      d:'dg'},
+  tillage:    {l:'Tillage',    d:'dt'},
+  semi:       {l:'Semi',       d:'ds'},
+  specialty:  {l:'Specialty',  d:'dsp'},
+  trucks:     {l:'Trucks',     d:'dtr'},
+  misc:       {l:'Misc',       d:'dmi'},
+  parts:      {l:'Parts',      d:'dp'}
 };
+var DEF = [
+  {id:'f1', n:'1/64 IH Workstar Floater Sprayer Truck',                      c:'fertilizer', parts:[]},
+  {id:'f2', n:'1/64 IH 4400 Floater Sprayer Truck',                          c:'fertilizer', parts:[]},
+  {id:'f3', n:'1/64 Chemical Tote Cage Tank 275 Gallons',                    c:'fertilizer', parts:[]},
+  {id:'f4', n:'1/64 Fertilizer and Lime Conveyor Floater Loader Red',         c:'fertilizer', parts:[]},
+  {id:'f5', n:'1/64 Liquid Fertilizer Tender on CAT CT660 Truck 3,250 gal',  c:'fertilizer', parts:[]},
+  {id:'f6', n:'1/64 Gooseneck Liquid Fertilizer Tender Trailer Blue 1,050 Gal', c:'fertilizer', parts:[]},
+  {id:'f7', n:'1/64 Gooseneck Liquid Fertilizer Tender Trailer Black 1,050 Gal',c:'fertilizer', parts:[]},
+  {id:'f8', n:'1/64 Big John Saddle Tanks (Green/Yellow)',                    c:'fertilizer', parts:[]},
+  {id:'f9', n:'1/64 Old Style Liquid Fertilizer Tender Trailer Spread Axle', c:'fertilizer', parts:[]},
+  {id:'f10',n:'1/64 Sprayer Tender Flatbed for Truck Mount',                  c:'fertilizer', parts:[]},
+  {id:'f11',n:'1/64 Chem Farm Saddle Tanks 300 Gallon',                       c:'fertilizer', parts:[]},
+  {id:'f12',n:'1/64 Chem Farm Saddle Tanks 300 Gallon (modern decal)',         c:'fertilizer', parts:[]},
+  {id:'f13',n:'1/64 Peterbilt 385 Sprayer Tender Truck Black',                c:'fertilizer', parts:[]},
+  {id:'f14',n:'1/64 Peterbilt 385 Truck with Fertilizer Tender Black',        c:'fertilizer', parts:[]},
+  {id:'f15',n:'1/64 Fertilizer Spreader 8 Ton',                               c:'fertilizer', parts:[]},
+  {id:'f16',n:'1/64 Ray-Man Fertilizer Tender Trailer 7 Hopper Auger',        c:'fertilizer', parts:[]},
+  {id:'f17',n:'1/64 Ray-Man Fertilizer Tender Trailer 6 Hopper Auger',        c:'fertilizer', parts:[]},
+  {id:'f18',n:'1/64 Ray-Man Fertilizer Tender Trailer 5 Hopper Auger',        c:'fertilizer', parts:[]},
+  {id:'f19',n:'1/64 Vertical Fertilizer Blender System (2 Pieces)',           c:'fertilizer', parts:[]},
+  {id:'f20',n:'1/64 Rear Discharge Fertilizer Tender Trailer',                c:'fertilizer', parts:[]},
+  {id:'f21',n:'1/64 Fertilizer Tender Trailer 3 Hopper 24 Ton',               c:'fertilizer', parts:[]},
+  {id:'f22',n:'1/64 Fertilizer Tender Trailer 3 Hopper 24 Ton White Wheels',  c:'fertilizer', parts:[]},
+  {id:'f23',n:'1/64 Fertilizer Tender Trailer 2 Hopper 16 Ton',               c:'fertilizer', parts:[]},
+  {id:'f24',n:'1/64 Liquid Fertilizer Tender Trailer 3,250 gallons',          c:'fertilizer', parts:[]},
+  {id:'f25',n:'1/64 Liquid Fertilizer Tender on IH WorkStar Truck 4,000 gal', c:'fertilizer', parts:[]},
+  {id:'f26',n:'1/64 Fertilizer Tender 2 Hopper on International Workstar Truck',c:'fertilizer',parts:[]},
+  {id:'f27',n:'1/64 IH Workstar Fertilizer Spreader Floater Truck',           c:'fertilizer', parts:[]},
+  {id:'f28',n:'1/64 Chevy C60 Fertilizer Spreader Floater Truck White',       c:'fertilizer', parts:[]},
+  {id:'f29',n:'1/64 Chevy C60 Fertilizer Spreader Floater Truck Red',         c:'fertilizer', parts:[]},
+  {id:'f30',n:'1/64 5,000 Gallon Standing Liquid Tank',                       c:'fertilizer', parts:[]},
+  {id:'f31',n:'1/64 3,000 Gallon Standing Liquid Tank',                       c:'fertilizer', parts:[]},
+  {id:'f32',n:'1/64 3,000 Gallon Standing Liquid Tank White',                 c:'fertilizer', parts:[]},
+  {id:'f33',n:'1/64 5,000 Gallon Standing Liquid Tank White',                 c:'fertilizer', parts:[]},
+  {id:'f34',n:'1/64 Air Compressor 60 Gallon Black',                         c:'fertilizer', parts:[]},
+  {id:'f35',n:'1/64 Air Compressor 60 Gallon Blue',                           c:'fertilizer', parts:[]},
+  {id:'m1', n:'1/64 Waste Handler Manure Spreader 4,000 gallons',             c:'manure', parts:[]},
+  {id:'m2', n:'1/64 Husky Manure Spreader 7,400 gallon',                      c:'manure', parts:[]},
+  {id:'m3', n:'1/64 Diller Manure Spreader Trailer Tandem Axle Mud Tires',    c:'manure', parts:[]},
+  {id:'m4', n:'1/64 Dryhill Manure Frac Tank 20,000 gallons',                 c:'manure', parts:[]},
+  {id:'m5', n:'1/64 Liquid Manure Spreader Tri Axle 6,300 gallon',            c:'manure', parts:[]},
+  {id:'m6', n:'1/64 Liquid Manure Spreader Quad Axle 9,500 gallon',           c:'manure', parts:[]},
+  {id:'m7', n:'1/64 Bodco Manure Spreader 4,000 gallons',                     c:'manure', parts:[]},
+  {id:'m8', n:'1/64 Husky Manure Spreader for Trucks 4,000 gallon',           c:'manure', parts:[]},
+  {id:'m9', n:'1/64 Pik Rite HP-500 Manure Spreader',                         c:'manure', parts:[]},
+  {id:'m10',n:'1/64 Waste Handler Manure Spreader 7,300 gallon Tri Axle',     c:'manure', parts:[]},
+  {id:'m11',n:'1/64 Husky Manure Spreader 5,000 gallon',                      c:'manure', parts:[]},
+  {id:'m12',n:'1/64 Husky Manure Spreader on IH WorkStar Truck 4,000 gallon', c:'manure', parts:[]},
+  {id:'m13',n:'1/64 IH Workstar Floater Husky Manure Spreader Truck',         c:'manure', parts:[]},
+  {id:'m14',n:'1/64 Diller Manure Spreader Trailer Tri Axle',                 c:'manure', parts:[]},
+  {id:'m15',n:'1/64 Bodco Manure Spreader 7,300 gallon Tri Axle',             c:'manure', parts:[]},
+  {id:'m16',n:'1/64 Diller Manure Spreader Trailer Tandem Axle',              c:'manure', parts:[]},
+  {id:'h1', n:'1/64 Vertical Feed Mixer Twin Screw Holstein Cow',             c:'hay', parts:[]},
+  {id:'h2', n:'1/64 Hay Head for Green Forage Harvester (4 Prong Mount)',     c:'hay', parts:[]},
+  {id:'h3', n:'1/64 Bale Wrapper',                                            c:'hay', parts:[]},
+  {id:'h4', n:"1/64 16ft Pivoting Silage Blade Straight Frame Tractors",      c:'hay', parts:[]},
+  {id:'h5', n:'1/64 Field Queen 7650 Forage Harvester Red (with 2 Heads)',    c:'hay', parts:[]},
+  {id:'h6', n:'1/64 Field Queen 7650 Forage Harvester Yellow (with 2 Heads)', c:'hay', parts:[]},
+  {id:'h7', n:"1/64 18ft Pivoting Silage Blade",                              c:'hay', parts:[]},
+  {id:'h8', n:'1/64 Vertical Feed Mixer Twin Screw Red/Yellow',               c:'hay', parts:[]},
+  {id:'h9', n:'1/64 Vertical Feed Mixer Single Screw Red/Yellow',             c:'hay', parts:[]},
+  {id:'h10',n:'1/64 Hay Head for Green Forage Harvester',                     c:'hay', parts:[]},
+  {id:'h11',n:'1/64 Vertical Feed Mixer Twin Screw Pull Type Blue',           c:'hay', parts:[]},
+  {id:'h12',n:'1/64 Vertical Feed Mixer Triple Screw Blue',                   c:'hay', parts:[]},
+  {id:'h13',n:'1/64 Hay Squeeze Dark Gray',                                   c:'hay', parts:[]},
+  {id:'h14',n:'1/64 Vertical Feed Twin Screw Blue on White IH Workstar Truck',c:'hay', parts:[]},
+  {id:'h15',n:'1/64 Silage Blade for 4wd Tractors',                           c:'hay', parts:[]},
+  {id:'h16',n:'1/64 Hay Squeeze White',                                       c:'hay', parts:[]},
+  {id:'g1', n:'1/64 EZ Trail 510 Grain Cart Blue Tractor Tread Tires',        c:'grain', parts:[]},
+  {id:'g2', n:'1/64 Skid Pup Grain Trailer Blue',                             c:'grain', parts:[]},
+  {id:'g3', n:'1/64 EZ Trail 510 Grain Cart Blue',                            c:'grain', parts:[]},
+  {id:'g4', n:'1/64 EZ Trail 510 Grain Cart Green Tractor Tread Tires',       c:'grain', parts:[]},
+  {id:'g5', n:'1/64 EZ Trail 510 Grain Cart Red Tractor Tread Tires',         c:'grain', parts:[]},
+  {id:'g6', n:'1/64 EZ Trail 510 Grain Cart Red',                             c:'grain', parts:[]},
+  {id:'g7', n:'1/64 EZ Trail 510 Grain Cart Green',                           c:'grain', parts:[]},
+  {id:'g8', n:'1/64 Skid Pup Grain Trailer Gray',                             c:'grain', parts:[]},
+  {id:'g9', n:'1/64 Grain Dryer 500 Bushel',                                  c:'grain', parts:[]},
+  {id:'g10',n:'1/64 Skid Pup Grain Trailer Red',                              c:'grain', parts:[]},
+  {id:'g11',n:'1/64 8 Axle 3 Hopper Grain Trailer for Semi Trucks',           c:'grain', parts:[]},
+  {id:'g12',n:'1/64 7 Axle 3 Hopper Grain Trailer for Semi Trucks',           c:'grain', parts:[]},
+  {id:'g13',n:'1/64 3 Axle 2 Hopper Grain Trailer White/Silver for Semi Trucks',c:'grain',parts:[]},
+  {id:'g14',n:'1/64 475 bu. DMI Gravity Wagon',                               c:'grain', parts:[]},
+  {id:'g15',n:'1/64 Weigh Wagon',                                             c:'grain', parts:[]},
+  {id:'g16',n:'1/64 275 bu. DMI Gravity Wagon',                               c:'grain', parts:[]},
+  {id:'t1', n:'1/64 Tile Roll (Black)',                                        c:'tillage', parts:[]},
+  {id:'t2', n:'1/64 Tile Plow for Tractor Mount (yellow)',                    c:'tillage', parts:[]},
+  {id:'t3', n:'1/64 Tile Stringer Trailer (Black)',                           c:'tillage', parts:[]},
+  {id:'t4', n:'1/64 Tile Stringer Trailer (Yellow)',                          c:'tillage', parts:[]},
+  {id:'t5', n:'1/64 Tile Plow Set w/ Tile Roll and Stringer Cart (black)',    c:'tillage', parts:[]},
+  {id:'t6', n:'1/64 Tile Plow Set w/ Tile Roll and Stringer Cart (yellow)',   c:'tillage', parts:[]},
+  {id:'t7', n:'1/64 Tile Plow for Tractor Mount (black)',                     c:'tillage', parts:[]},
+  {id:'t8', n:'1/64 Chisel Plow 11 Shank Red',                               c:'tillage', parts:[]},
+  {id:'s1', n:'1/64 Ray-Man Fertilizer Tender Trailer 7 Hopper Auger',        c:'semi', parts:[]},
+  {id:'s2', n:'1/64 Ray-Man Fertilizer Tender Trailer 6 Hopper Auger',        c:'semi', parts:[]},
+  {id:'s3', n:'1/64 Ray-Man Fertilizer Tender Trailer 5 Hopper Auger',        c:'semi', parts:[]},
+  {id:'s4', n:'1/64 Live Bottom Belt Trailer Tandem Axle Black Door',         c:'semi', parts:[]},
+  {id:'s5', n:'1/64 Live Bottom Belt Trailer Tri Axle Black Door',            c:'semi', parts:[]},
+  {id:'s6', n:'1/64 Live Bottom Belt Trailer Quad Axle Black Door',           c:'semi', parts:[]},
+  {id:'s7', n:'1/64 Live Bottom Belt Trailer Tri Axle Red Door',              c:'semi', parts:[]},
+  {id:'s8', n:'1/64 Old Style Liquid Fertilizer Tender Trailer',              c:'semi', parts:[]},
+  {id:'s9', n:'1/64 Fertilizer Tender Trailer 3 Hopper 24 Ton',               c:'semi', parts:[]},
+  {id:'s10',n:'1/64 Fertilizer Tender Trailer 3 Hopper 24 Ton White Wheels',  c:'semi', parts:[]},
+  {id:'s11',n:'1/64 Fertilizer Tender Trailer 2 Hopper 16 Ton',               c:'semi', parts:[]},
+  {id:'s12',n:'1/64 Rear Discharge Fertilizer Tender Trailer',                c:'semi', parts:[]},
+  {id:'s13',n:'1/64 Liquid Fertilizer Tender Trailer 3,250 gallons',          c:'semi', parts:[]},
+  {id:'sp1',n:'1/64 Field Queen 7650 Forage Harvester Red (with 2 Heads)',    c:'specialty', parts:[]},
+  {id:'sp2',n:'1/64 Field Queen 7650 Forage Harvester Yellow (with 2 Heads)', c:'specialty', parts:[]},
+  {id:'sp3',n:'1/64 Bob Model 56 Edible Bean Combine Green',                  c:'specialty', parts:[]},
+  {id:'sp4',n:'1/64 Bob Model 56 Edible Bean Combine Red',                    c:'specialty', parts:[]},
+  {id:'sp5',n:'1/64 Forage Harvester for Tractor Mount',                      c:'specialty', parts:[]},
+  {id:'tr1',n:'1/64 IH 4400 Floater Sprayer Truck',                           c:'trucks', parts:[]},
+  {id:'tr2',n:'1/64 IH Workstar Floater Sprayer Truck',                        c:'trucks', parts:[]},
+  {id:'tr3',n:'1/64 Liquid Fertilizer Tender on CAT CT660 Truck 3,250 gal',   c:'trucks', parts:[]},
+  {id:'tr4',n:'1/64 Peterbilt 385 Sprayer Tender Truck Black',                 c:'trucks', parts:[]},
+  {id:'tr5',n:'1/64 Peterbilt 385 Service Truck Single Axle Black',            c:'trucks', parts:[]},
+  {id:'tr6',n:'1/64 GMC General Floater Sprayer Truck Black',                  c:'trucks', parts:[]},
+  {id:'tr7',n:'1/64 Milk Truck Quad Axle Mack Granite Truck Yellow',           c:'trucks', parts:[]},
+  {id:'tr8',n:'1/64 IH Workstar Fertilizer Spreader Floater Truck',            c:'trucks', parts:[]},
+  {id:'tr9',n:'1/64 Husky Manure Spreader on IH WorkStar Truck 4,000 gallon', c:'trucks', parts:[]},
+  {id:'tr10',n:'1/64 IH Workstar Floater Husky Manure Spreader Truck',         c:'trucks', parts:[]},
+  {id:'tr11',n:'1/64 Milk Truck Quad Axle Peterbilt Truck Red',                c:'trucks', parts:[]},
+  {id:'tr12',n:'1/64 Milk Truck 6 Axle Peterbilt Truck Black',                 c:'trucks', parts:[]},
+  {id:'tr13',n:'1/64 Fertilizer Tender 2 Hopper on International Workstar Truck',c:'trucks',parts:[]},
+  {id:'tr14',n:'1/64 Liquid Fertilizer Tender on IH WorkStar Truck 4,000 gal', c:'trucks', parts:[]},
+  {id:'tr15',n:'1/64 Chevy C60 Fertilizer Spreader Floater Truck White',       c:'trucks', parts:[]},
+  {id:'tr16',n:'1/64 Chevy C60 Fertilizer Spreader Floater Truck Red',         c:'trucks', parts:[]},
+  {id:'tr17',n:'1/64 Peterbilt 385 Truck with Fertilizer Tender Black',        c:'trucks', parts:[]},
+  {id:'mi1',n:'1/64 5,000 Gallon Standing Liquid Tank',                        c:'misc', parts:[]},
+  {id:'mi2',n:'1/64 3,000 Gallon Standing Liquid Tank',                        c:'misc', parts:[]},
+  {id:'mi3',n:'1/64 3,000 Gallon Standing Liquid Tank White',                  c:'misc', parts:[]},
+  {id:'mi4',n:'1/64 5,000 Gallon Standing Liquid Tank White',                  c:'misc', parts:[]},
+  {id:'mi5',n:'1/64 3,250 Gallon Leg Tank',                                    c:'misc', parts:[]},
+  {id:'mi6',n:'1/64 2,350 Gallon Leg Tank White',                              c:'misc', parts:[]},
+  {id:'mi7',n:'1/64 1,550 Gallon Standing Liquid Tank',                        c:'misc', parts:[]},
+  {id:'mi8',n:'1/64 1,550 Gallon Standing Liquid Tank White',                  c:'misc', parts:[]},
+  {id:'mi9',n:'1/64 10,000 Gallon Standing Liquid Tank',                       c:'misc', parts:[]},
+  {id:'mi10',n:'1/64 Super Reel Hose Reel Black',                              c:'misc', parts:[]},
+  {id:'mi11',n:'1/64 MF Off Road Fork Lift',                                   c:'misc', parts:[]},
+  {id:'mi12',n:'1/64 Rock Picker',                                             c:'misc', parts:[]},
+  {id:'mi13',n:'1/64 Milk Trailer Tri Axle',                                   c:'misc', parts:[]},
+  {id:'mi14',n:'1/64 Air Compressor 60 Gallon Black',                          c:'misc', parts:[]},
+  {id:'mi15',n:'1/64 Air Compressor 60 Gallon Blue',                           c:'misc', parts:[]}
+];
 
-const DEF=[
-  {id:'f1',n:'1/64 IH Workstar Floater Sprayer Truck',c:'fertilizer'},
-  {id:'f2',n:'1/64 IH 4400 Floater Sprayer Truck',c:'fertilizer'},
-  {id:'f3',n:'1/64 Chemical Tote Cage Tank 275 Gallons',c:'fertilizer'},
-  {id:'f4',n:'1/64 Fertilizer and Lime Conveyor Floater Loader Red',c:'fertilizer'},
-  {id:'f5',n:'1/64 Liquid Fertilizer Tender on CAT CT660 Truck 3,250 gal',c:'fertilizer'},
-  {id:'f6',n:'1/64 Gooseneck Liquid Fertilizer Tender Trailer Blue 1,050 Gal',c:'fertilizer'},
-  {id:'f7',n:'1/64 Gooseneck Liquid Fertilizer Tender Trailer Black 1,050 Gal',c:'fertilizer'},
-  {id:'f8',n:'1/64 Big John Saddle Tanks (Green/Yellow)',c:'fertilizer'},
-  {id:'f9',n:'1/64 Old Style Liquid Fertilizer Tender Trailer Spread Axle',c:'fertilizer'},
-  {id:'f10',n:'1/64 Sprayer Tender Flatbed for Truck Mount',c:'fertilizer'},
-  {id:'f11',n:'1/64 Chem Farm Saddle Tanks 300 Gallon',c:'fertilizer'},
-  {id:'f12',n:'1/64 Chem Farm Saddle Tanks 300 Gallon (modern decal)',c:'fertilizer'},
-  {id:'f13',n:'1/64 Peterbilt 385 Sprayer Tender Truck Black',c:'fertilizer'},
-  {id:'f14',n:'1/64 Peterbilt 385 Truck with Fertilizer Tender Black',c:'fertilizer'},
-  {id:'f15',n:'1/64 Fertilizer Spreader 8 Ton',c:'fertilizer'},
-  {id:'f16',n:'1/64 Ray-Man Fertilizer Tender Trailer 7 Hopper Auger',c:'fertilizer'},
-  {id:'f17',n:'1/64 Ray-Man Fertilizer Tender Trailer 6 Hopper Auger',c:'fertilizer'},
-  {id:'f18',n:'1/64 Ray-Man Fertilizer Tender Trailer 5 Hopper Auger',c:'fertilizer'},
-  {id:'f19',n:'1/64 Vertical Fertilizer Blender System (2 Pieces)',c:'fertilizer'},
-  {id:'f20',n:'1/64 Rear Discharge Fertilizer Tender Trailer',c:'fertilizer'},
-  {id:'f21',n:'1/64 Fertilizer Tender Trailer 3 Hopper 24 Ton',c:'fertilizer'},
-  {id:'f22',n:'1/64 Fertilizer Tender Trailer 3 Hopper 24 Ton White Wheels',c:'fertilizer'},
-  {id:'f23',n:'1/64 Fertilizer Tender Trailer 2 Hopper 16 Ton',c:'fertilizer'},
-  {id:'f24',n:'1/64 Liquid Fertilizer Tender Trailer 3,250 gallons',c:'fertilizer'},
-  {id:'f25',n:'1/64 Liquid Fertilizer Tender on IH WorkStar Truck 4,000 gal',c:'fertilizer'},
-  {id:'f26',n:'1/64 Fertilizer Tender 2 Hopper on International Workstar Truck',c:'fertilizer'},
-  {id:'f27',n:'1/64 IH Workstar Fertilizer Spreader Floater Truck',c:'fertilizer'},
-  {id:'f28',n:'1/64 Chevy C60 Fertilizer Spreader Floater Truck White',c:'fertilizer'},
-  {id:'f29',n:'1/64 Chevy C60 Fertilizer Spreader Floater Truck Red',c:'fertilizer'},
-  {id:'f30',n:'1/64 5,000 Gallon Standing Liquid Tank',c:'fertilizer'},
-  {id:'f31',n:'1/64 3,000 Gallon Standing Liquid Tank',c:'fertilizer'},
-  {id:'f32',n:'1/64 3,000 Gallon Standing Liquid Tank White',c:'fertilizer'},
-  {id:'f33',n:'1/64 5,000 Gallon Standing Liquid Tank White',c:'fertilizer'},
-  {id:'f34',n:'1/64 Air Compressor 60 Gallon Black',c:'fertilizer'},
-  {id:'f35',n:'1/64 Air Compressor 60 Gallon Blue',c:'fertilizer'},
-  {id:'m1',n:'1/64 Waste Handler Manure Spreader 4,000 gallons',c:'manure'},
-  {id:'m2',n:'1/64 Husky Manure Spreader 7,400 gallon',c:'manure'},
-  {id:'m3',n:'1/64 Diller Manure Spreader Trailer Tandem Axle Mud Tires',c:'manure'},
-  {id:'m4',n:'1/64 Dryhill Manure Frac Tank 20,000 gallons',c:'manure'},
-  {id:'m5',n:'1/64 Liquid Manure Spreader Tri Axle 6,300 gallon',c:'manure'},
-  {id:'m6',n:'1/64 Liquid Manure Spreader Quad Axle 9,500 gallon',c:'manure'},
-  {id:'m7',n:'1/64 Bodco Manure Spreader 4,000 gallons',c:'manure'},
-  {id:'m8',n:'1/64 Husky Manure Spreader for Trucks 4,000 gallon',c:'manure'},
-  {id:'m9',n:'1/64 Pik Rite HP-500 Manure Spreader',c:'manure'},
-  {id:'m10',n:'1/64 Waste Handler Manure Spreader 7,300 gallon Tri Axle',c:'manure'},
-  {id:'m11',n:'1/64 Husky Manure Spreader 5,000 gallon',c:'manure'},
-  {id:'m12',n:'1/64 Husky Manure Spreader on IH WorkStar Truck 4,000 gallon',c:'manure'},
-  {id:'m13',n:'1/64 IH Workstar Floater Husky Manure Spreader Truck',c:'manure'},
-  {id:'m14',n:'1/64 Diller Manure Spreader Trailer Tri Axle',c:'manure'},
-  {id:'m15',n:'1/64 Bodco Manure Spreader 7,300 gallon Tri Axle',c:'manure'},
-  {id:'m16',n:'1/64 Diller Manure Spreader Trailer Tandem Axle',c:'manure'},
-  {id:'h1',n:'1/64 Vertical Feed Mixer Twin Screw Holstein Cow',c:'hay'},
-  {id:'h2',n:'1/64 Hay Head for Green Forage Harvester (4 Prong Mount)',c:'hay'},
-  {id:'h3',n:'1/64 Bale Wrapper',c:'hay'},
-  {id:'h4',n:"1/64 16' Pivoting Silage Blade Straight Frame Tractors",c:'hay'},
-  {id:'h5',n:'1/64 Field Queen 7650 Forage Harvester Red (with 2 Heads)',c:'hay'},
-  {id:'h6',n:'1/64 Field Queen 7650 Forage Harvester Yellow (with 2 Heads)',c:'hay'},
-  {id:'h7',n:"1/64 18' Pivoting Silage Blade",c:'hay'},
-  {id:'h8',n:'1/64 Vertical Feed Mixer Twin Screw Red/Yellow',c:'hay'},
-  {id:'h9',n:'1/64 Vertical Feed Mixer Single Screw Red/Yellow',c:'hay'},
-  {id:'h10',n:'1/64 Hay Head for Green Forage Harvester',c:'hay'},
-  {id:'h11',n:'1/64 Vertical Feed Mixer Twin Screw pull Type Blue',c:'hay'},
-  {id:'h12',n:'1/64 Vertical Feed Mixer Triple Screw Blue',c:'hay'},
-  {id:'h13',n:'1/64 Hay Squeeze Dark Gray',c:'hay'},
-  {id:'h14',n:'1/64 Vertical Feed Twin Screw Blue on White IH Workstar Truck',c:'hay'},
-  {id:'h15',n:'1/64 Silage Blade for 4wd Tractors',c:'hay'},
-  {id:'h16',n:'1/64 Hay Squeeze White',c:'hay'},
-  {id:'g1',n:'1/64 EZ Trail 510 Grain Cart Blue Tractor Tread Tires',c:'grain'},
-  {id:'g2',n:'1/64 Skid Pup Grain Trailer Blue',c:'grain'},
-  {id:'g3',n:'1/64 EZ Trail 510 Grain Cart Blue',c:'grain'},
-  {id:'g4',n:'1/64 EZ Trail 510 Grain Cart Green Tractor Tread Tires',c:'grain'},
-  {id:'g5',n:'1/64 EZ Trail 510 Grain Cart Red Tractor Tread Tires',c:'grain'},
-  {id:'g6',n:'1/64 EZ Trail 510 Grain Cart Red',c:'grain'},
-  {id:'g7',n:'1/64 EZ Trail 510 Grain Cart Green',c:'grain'},
-  {id:'g8',n:'1/64 Skid Pup Grain Trailer Gray',c:'grain'},
-  {id:'g9',n:'1/64 Grain Dryer 500 Bushel',c:'grain'},
-  {id:'g10',n:'1/64 Skid Pup Grain Trailer Red',c:'grain'},
-  {id:'g11',n:'1/64 8 Axle 3 Hopper Grain Trailer for Semi Trucks',c:'grain'},
-  {id:'g12',n:'1/64 7 Axle 3 Hopper Grain Trailer for Semi Trucks',c:'grain'},
-  {id:'g13',n:'1/64 3 Axle 2 Hopper Grain Trailer White/Silver for Semi Trucks',c:'grain'},
-  {id:'g14',n:'1/64 475 bu. DMI Gravity Wagon',c:'grain'},
-  {id:'g15',n:'1/64 Weigh Wagon',c:'grain'},
-  {id:'g16',n:'1/64 275 bu. DMI Gravity Wagon',c:'grain'},
-  {id:'t1',n:'1/64 Tile Roll (Black)',c:'tillage'},
-  {id:'t2',n:'1/64 Tile Plow for Tractor Mount (yellow)',c:'tillage'},
-  {id:'t3',n:'1/64 Tile Stringer Trailer (Black)',c:'tillage'},
-  {id:'t4',n:'1/64 Tile Stringer Trailer (Yellow)',c:'tillage'},
-  {id:'t5',n:'1/64 Tile Plow Set w/ Tile Roll and Stringer Cart (black)',c:'tillage'},
-  {id:'t6',n:'1/64 Tile Plow Set w/ Tile Roll and Stringer Cart (yellow)',c:'tillage'},
-  {id:'t7',n:'1/64 Tile Plow for Tractor Mount (black)',c:'tillage'},
-  {id:'t8',n:'1/64 Chisel Plow 11 Shank Red',c:'tillage'},
-  {id:'s1',n:'1/64 Ray-Man Fertilizer Tender Trailer 7 Hopper Auger',c:'semi'},
-  {id:'s2',n:'1/64 Ray-Man Fertilizer Tender Trailer 6 Hopper Auger',c:'semi'},
-  {id:'s3',n:'1/64 Ray-Man Fertilizer Tender Trailer 5 Hopper Auger',c:'semi'},
-  {id:'s4',n:'1/64 Live Bottom Belt Trailer Tandem Axle Black Door',c:'semi'},
-  {id:'s5',n:'1/64 Live Bottom Belt Trailer Tri Axle Black Door',c:'semi'},
-  {id:'s6',n:'1/64 Live Bottom Belt Trailer Quad Axle Black Door',c:'semi'},
-  {id:'s7',n:'1/64 Live Bottom Belt Trailer Tri Axle Red Door',c:'semi'},
-  {id:'s8',n:'1/64 Old Style Liquid Fertilizer Tender Trailer',c:'semi'},
-  {id:'s9',n:'1/64 Fertilizer Tender Trailer 3 Hopper 24 Ton',c:'semi'},
-  {id:'s10',n:'1/64 Fertilizer Tender Trailer 3 Hopper 24 Ton White Wheels',c:'semi'},
-  {id:'s11',n:'1/64 Fertilizer Tender Trailer 2 Hopper 16 Ton',c:'semi'},
-  {id:'s12',n:'1/64 Rear Discharge Fertilizer Tender Trailer',c:'semi'},
-  {id:'s13',n:'1/64 Liquid Fertilizer Tender Trailer 3,250 gallons',c:'semi'},
-  {id:'sp1',n:'1/64 Field Queen 7650 Forage Harvester Red (with 2 Heads)',c:'specialty'},
-  {id:'sp2',n:'1/64 Field Queen 7650 Forage Harvester Yellow (with 2 Heads)',c:'specialty'},
-  {id:'sp3',n:'1/64 Bob Model 56 Edible Bean Combine Green',c:'specialty'},
-  {id:'sp4',n:'1/64 Bob Model 56 Edible Bean Combine Red',c:'specialty'},
-  {id:'sp5',n:'1/64 Forage Harvester for Tractor Mount',c:'specialty'},
-  {id:'tr1',n:'1/64 IH 4400 Floater Sprayer Truck',c:'trucks'},
-  {id:'tr2',n:'1/64 IH Workstar Floater Sprayer Truck',c:'trucks'},
-  {id:'tr3',n:'1/64 Liquid Fertilizer Tender on CAT CT660 Truck 3,250 gal',c:'trucks'},
-  {id:'tr4',n:'1/64 Peterbilt 385 Sprayer Tender Truck Black',c:'trucks'},
-  {id:'tr5',n:'1/64 Peterbilt 385 Service Truck Single Axle Black',c:'trucks'},
-  {id:'tr6',n:'1/64 GMC General Floater Sprayer Truck Black',c:'trucks'},
-  {id:'tr7',n:'1/64 Milk Truck Quad Axle Mack Granite Truck Yellow',c:'trucks'},
-  {id:'tr8',n:'1/64 IH Workstar Fertilizer Spreader Floater Truck',c:'trucks'},
-  {id:'tr9',n:'1/64 Husky Manure Spreader on IH WorkStar Truck 4,000 gallon',c:'trucks'},
-  {id:'tr10',n:'1/64 IH Workstar Floater Husky Manure Spreader Truck',c:'trucks'},
-  {id:'tr11',n:'1/64 Milk Truck Quad Axle Peterbilt Truck Red',c:'trucks'},
-  {id:'tr12',n:'1/64 Milk Truck 6 Axle Peterbilt Truck Black',c:'trucks'},
-  {id:'tr13',n:'1/64 Fertilizer Tender 2 Hopper on International Workstar Truck',c:'trucks'},
-  {id:'tr14',n:'1/64 Liquid Fertilizer Tender on IH WorkStar Truck 4,000 gal',c:'trucks'},
-  {id:'tr15',n:'1/64 Chevy C60 Fertilizer Spreader Floater Truck White',c:'trucks'},
-  {id:'tr16',n:'1/64 Chevy C60 Fertilizer Spreader Floater Truck Red',c:'trucks'},
-  {id:'tr17',n:'1/64 Peterbilt 385 Truck with Fertilizer Tender Black',c:'trucks'},
-  {id:'mi1',n:'1/64 5,000 Gallon Standing Liquid Tank',c:'misc'},
-  {id:'mi2',n:'1/64 3,000 Gallon Standing Liquid Tank',c:'misc'},
-  {id:'mi3',n:'1/64 3,000 Gallon Standing Liquid Tank White',c:'misc'},
-  {id:'mi4',n:'1/64 5,000 Gallon Standing Liquid Tank White',c:'misc'},
-  {id:'mi5',n:'1/64 3,250 Gallon Leg Tank',c:'misc'},
-  {id:'mi6',n:'1/64 2,350 Gallon Leg Tank White',c:'misc'},
-  {id:'mi7',n:'1/64 1,550 Gallon Standing Liquid Tank',c:'misc'},
-  {id:'mi8',n:'1/64 1,550 Gallon Standing Liquid Tank White',c:'misc'},
-  {id:'mi9',n:'1/64 10,000 Gallon Standing Liquid Tank',c:'misc'},
-  {id:'mi10',n:'1/64 Super Reel Hose Reel Black',c:'misc'},
-  {id:'mi11',n:'1/64 MF Off Road Fork Lift',c:'misc'},
-  {id:'mi12',n:'1/64 Rock Picker',c:'misc'},
-  {id:'mi13',n:'1/64 Milk Trailer Tri Axle',c:'misc'},
-  {id:'mi14',n:'1/64 Air Compressor 60 Gallon Black',c:'misc'},
-  {id:'mi15',n:'1/64 Air Compressor 60 Gallon Blue',c:'misc'},
-].map(p=>({...p,parts:[]}));
+var prods = [];
+var openC = {};
+var activeCat = 'all';
+var saveT = null;
 
-let prods=[],openC={},activeCat='all',saveT=null;
+function copyDef() {
+  prods = DEF.map(function(p) {
+    return {id:p.id, n:p.n, c:p.c, parts:[]};
+  });
+}
 
-function load(){
-  try{
-    const raw=localStorage.getItem(SK);
-    if(raw){
-      const d=JSON.parse(raw);
-      if(d.prods&&d.prods.length){
-        const sm={};
-        d.prods.forEach(p=>{sm[p.id]=p;});
-        prods=DEF.map(p=>sm[p.id]?{...p,...sm[p.id]}:p);
-        d.prods.forEach(p=>{if(!DEF.find(x=>x.id===p.id))prods.push(p);});
-      } else prods=DEF.map(p=>({...p}));
-      if(d.openC)openC=d.openC;
-    } else {
-      prods=DEF.map(p=>({...p}));
-    }
-  } catch(e){ prods=DEF.map(p=>({...p})); }
+function tryLoad() {
+  var canSave = false;
+  try {
+    localStorage.setItem('__t__','1');
+    localStorage.removeItem('__t__');
+    canSave = true;
+  } catch(e) {}
+
+  if (canSave) {
+    try {
+      var raw = localStorage.getItem(SK);
+      if (raw) {
+        var d = JSON.parse(raw);
+        if (d && d.prods && d.prods.length > 0) {
+          var sm = {};
+          for (var i = 0; i < d.prods.length; i++) { sm[d.prods[i].id] = d.prods[i]; }
+          prods = DEF.map(function(p) {
+            var saved = sm[p.id];
+            if (saved) return {id:p.id, n:p.n, c:p.c, parts: saved.parts || []};
+            return {id:p.id, n:p.n, c:p.c, parts:[]};
+          });
+          for (var j = 0; j < d.prods.length; j++) {
+            var sp = d.prods[j];
+            var found = false;
+            for (var k = 0; k < DEF.length; k++) { if (DEF[k].id === sp.id) { found = true; break; } }
+            if (!found) prods.push(sp);
+          }
+        } else { copyDef(); }
+        if (d && d.openC) openC = d.openC;
+      } else { copyDef(); }
+    } catch(e) { copyDef(); }
+  } else { copyDef(); }
+
   buildCats();
   render();
 }
 
-function save(){
-  try{
-    localStorage.setItem(SK,JSON.stringify({prods,openC}));
-    const el=document.getElementById('hsave');
-    if(el){ el.textContent='Saved'; setTimeout(()=>el.textContent='',1500); }
-  } catch(e){}
-}
-function ds(){ clearTimeout(saveT); saveT=setTimeout(save,400); }
-function uid(){ return 'u'+Date.now()+Math.random().toString(36).slice(2,5); }
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function pst(p){
-  if(!p.parts||!p.parts.length) return 'empty';
-  const m=p.parts.filter(x=>!x.have).length;
-  return m===0?'ready':m===1?'warn':'missing';
+function save() {
+  try {
+    localStorage.setItem(SK, JSON.stringify({prods:prods, openC:openC}));
+    var el = document.getElementById('hsave');
+    if (el) { el.textContent = 'Saved'; setTimeout(function(){ el.textContent = ''; }, 1500); }
+  } catch(e) {}
 }
 
-function buildCats(){
-  const w=document.getElementById('cats');
-  w.innerHTML='';
-  ['all',...Object.keys(CATS)].forEach(cat=>{
-    const b=document.createElement('button');
-    b.className='cb'+(activeCat===cat?' active':'');
-    b.textContent=cat==='all'?'All':CATS[cat].l;
-    b.onclick=()=>{ activeCat=cat; buildCats(); render(); };
-    w.appendChild(b);
+function ds() { clearTimeout(saveT); saveT = setTimeout(save, 400); }
+function uid() { return 'u' + Date.now() + Math.random().toString(36).slice(2,5); }
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function pst(p) {
+  if (!p.parts || p.parts.length === 0) return 'empty';
+  var m = 0;
+  for (var i = 0; i < p.parts.length; i++) { if (!p.parts[i].have) m++; }
+  if (m === 0) return 'ready';
+  if (m === 1) return 'warn';
+  return 'missing';
+}
+
+function buildCats() {
+  var w = document.getElementById('cats');
+  w.innerHTML = '';
+  var keys = ['all'].concat(Object.keys(CATS));
+  for (var i = 0; i < keys.length; i++) {
+    (function(cat) {
+      var b = document.createElement('button');
+      b.className = 'cb' + (activeCat === cat ? ' active' : '');
+      b.textContent = cat === 'all' ? 'All' : CATS[cat].l;
+      b.onclick = function() { activeCat = cat; buildCats(); render(); };
+      w.appendChild(b);
+    })(keys[i]);
+  }
+}
+
+function render() {
+  var q = (document.getElementById('sq').value || '').toLowerCase();
+  var vis = prods.filter(function(p) {
+    var mc = activeCat === 'all' || p.c === activeCat;
+    var mq = !q || p.n.toLowerCase().indexOf(q) !== -1;
+    return mc && mq;
   });
-}
+  var r = vis.filter(function(p){ return pst(p) === 'ready'; }).length;
+  document.getElementById('st').textContent = vis.length;
+  document.getElementById('sr').textContent = r;
+  document.getElementById('sm').textContent = vis.filter(function(p){ return pst(p)==='missing'||pst(p)==='warn'; }).length;
+  document.getElementById('sno').textContent = vis.filter(function(p){ return pst(p)==='empty'; }).length;
+  document.getElementById('hright').textContent = r + '/' + vis.length + ' ready';
 
-function render(){
-  const q=(document.getElementById('sq').value||'').toLowerCase();
-  const vis=prods.filter(p=>(activeCat==='all'||p.c===activeCat)&&(!q||p.n.toLowerCase().includes(q)));
-  const r=vis.filter(p=>pst(p)==='ready').length;
-  document.getElementById('st').textContent=vis.length;
-  document.getElementById('sr').textContent=r;
-  document.getElementById('sm').textContent=vis.filter(p=>['missing','warn'].includes(pst(p))).length;
-  document.getElementById('sno').textContent=vis.filter(p=>pst(p)==='empty').length;
-  document.getElementById('hright').textContent=r+'/'+vis.length+' ready';
-
-  const list=document.getElementById('plist');
-  if(!vis.length){
-    list.innerHTML='<div class="empty">No products found.<br/>Try a different search<br/>or tap + to add one.</div>';
+  var list = document.getElementById('plist');
+  if (vis.length === 0) {
+    list.innerHTML = '<div class="empty">No products found.<br/>Try a different search or tap + to add one.</div>';
     return;
   }
-  list.innerHTML='';
-  vis.forEach(prod=>{
-    const s=pst(prod),pts=prod.parts||[];
-    const hv=pts.filter(x=>x.have).length,tot=pts.length;
-    const pct=tot?Math.round(hv/tot*100):0;
-    const isOpen=openC[prod.id];
-    const ci=CATS[prod.c]||CATS.misc;
-    const bc=s==='ready'?'br':s==='warn'?'bw':s==='missing'?'bm':'be';
-    const bt=s==='ready'?'Ready':s==='warn'?'1 missing':s==='missing'?(tot-hv)+' missing':'No kit';
-    const ph=pts.map((pt,i)=>`
-      <div class="pr">
-        <input type="checkbox" ${pt.have?'checked':''} onchange="togP('${prod.id}',${i},this.checked)"/>
-        <span class="pn${pt.have?' done':''}">${esc(pt.name)}</span>
-        <span class="pq">x${pt.qty}</span>
-        <button class="pd" onclick="delP('${prod.id}',${i})">✕</button>
-      </div>`).join('');
+  list.innerHTML = '';
 
-    const card=document.createElement('div');
-    card.className='pcard';
-    card.innerHTML=`
-      <div class="ch" onclick="togC('${prod.id}')">
-        <div class="cdot ${ci.d}"></div>
-        <div class="cn">${esc(prod.n)}</div>
-        <span class="cbadge ${bc}">${bt}</span>
-        <span class="chev${isOpen?' open':''}">&#9654;</span>
-      </div>
-      <div class="cbody${isOpen?' open':''}">
-        ${tot?`<div class="ptrack"><div class="pfill" style="width:${pct}%"></div></div>`:''}
-        <div class="pl">Assembly parts</div>
-        ${ph||'<div style="font-size:13px;color:var(--muted);padding:6px 0 4px;">No parts yet — add below.</div>'}
-        <div class="af">
-          <input type="text" placeholder="Part name..." id="pn-${prod.id}"
-            onkeydown="if(event.key==='Enter')addPt('${prod.id}')"
-            autocomplete="off" autocorrect="off" spellcheck="false"/>
-          <input type="number" placeholder="Qty" id="pq-${prod.id}" value="1" min="1"/>
-          <button class="btna" onclick="addPt('${prod.id}')">Add</button>
-        </div>
-      </div>`;
-    list.appendChild(card);
-  });
+  for (var i = 0; i < vis.length; i++) {
+    (function(prod) {
+      var s = pst(prod);
+      var pts = prod.parts || [];
+      var hv = pts.filter(function(x){ return x.have; }).length;
+      var tot = pts.length;
+      var pct = tot ? Math.round(hv / tot * 100) : 0;
+      var isOpen = openC[prod.id];
+      var ci = CATS[prod.c] || CATS.misc;
+      var bc = s==='ready' ? 'br' : s==='warn' ? 'bw' : s==='missing' ? 'bm' : 'be';
+      var bt = s==='ready' ? 'Ready' : s==='warn' ? '1 missing' : s==='missing' ? (tot-hv)+' missing' : 'No kit';
+
+      var ph = '';
+      for (var j = 0; j < pts.length; j++) {
+        ph += '<div class="pr">' +
+          '<input type="checkbox"' + (pts[j].have ? ' checked' : '') + ' onchange="togP(\'' + prod.id + '\',' + j + ',this.checked)"/>' +
+          '<span class="pn' + (pts[j].have ? ' done' : '') + '">' + esc(pts[j].name) + '</span>' +
+          '<span class="pq">x' + pts[j].qty + '</span>' +
+          '<button class="pd" onclick="delP(\'' + prod.id + '\',' + j + ')">&#10005;</button>' +
+          '</div>';
+      }
+
+      var card = document.createElement('div');
+      card.className = 'pcard';
+      card.innerHTML =
+        '<div class="ch" onclick="togC(\'' + prod.id + '\')">' +
+          '<div class="cdot ' + ci.d + '"></div>' +
+          '<div class="cn">' + esc(prod.n) + '</div>' +
+          '<span class="cbadge ' + bc + '">' + bt + '</span>' +
+          '<span class="chev' + (isOpen ? ' open' : '') + '">&#9654;</span>' +
+        '</div>' +
+        '<div class="cbody' + (isOpen ? ' open' : '') + '">' +
+          (tot ? '<div class="ptrack"><div class="pfill" style="width:' + pct + '%"></div></div>' : '') +
+          '<div class="pl">Assembly parts</div>' +
+          (ph || '<div style="font-size:13px;color:var(--muted);padding:6px 0 4px;">No parts yet — add below.</div>') +
+          '<div class="af">' +
+            '<input type="text" placeholder="Part name..." id="pn-' + prod.id + '" onkeydown="if(event.key===\'Enter\')addPt(\'' + prod.id + '\')" autocomplete="off" autocorrect="off" spellcheck="false"/>' +
+            '<input type="number" placeholder="Qty" id="pq-' + prod.id + '" value="1" min="1"/>' +
+            '<button class="btna" onclick="addPt(\'' + prod.id + '\')">Add</button>' +
+          '</div>' +
+        '</div>';
+      list.appendChild(card);
+    })(vis[i]);
+  }
 }
 
-function togC(id){ openC[id]=!openC[id]; ds(); render(); }
-function togP(pid,i,ch){ const p=prods.find(x=>x.id===pid); if(p){ p.parts[i].have=ch; ds(); render(); } }
-function delP(pid,i){ const p=prods.find(x=>x.id===pid); if(p){ p.parts.splice(i,1); ds(); render(); } }
-
-function addPt(pid){
-  const ne=document.getElementById('pn-'+pid);
-  const qe=document.getElementById('pq-'+pid);
-  const nm=ne?ne.value.trim():'';
-  const qty=parseInt(qe?.value)||1;
-  if(!nm) return;
-  const p=prods.find(x=>x.id===pid);
-  if(p){ p.parts.push({name:nm,qty,have:false}); ds(); render(); }
-  const f=document.getElementById('pn-'+pid);
-  if(f){ f.value=''; f.focus(); }
+function togC(id) { openC[id] = !openC[id]; ds(); render(); }
+function togP(pid, i, ch) {
+  for (var k=0;k<prods.length;k++) { if(prods[k].id===pid){ prods[k].parts[i].have=ch; break; } }
+  ds(); render();
 }
-
-function openMo(){ document.getElementById('mo').classList.add('open'); setTimeout(()=>document.getElementById('nn').focus(),100); }
-function closeMo(){ document.getElementById('mo').classList.remove('open'); document.getElementById('nn').value=''; }
-
-function addP(){
-  const nm=document.getElementById('nn').value.trim();
-  const cat=document.getElementById('nc').value;
-  if(!nm){ document.getElementById('nn').focus(); return; }
-  prods.unshift({id:uid(),n:nm,c:cat,parts:[]});
+function delP(pid, i) {
+  for (var k=0;k<prods.length;k++) { if(prods[k].id===pid){ prods[k].parts.splice(i,1); break; } }
+  ds(); render();
+}
+function addPt(pid) {
+  var ne = document.getElementById('pn-'+pid);
+  var qe = document.getElementById('pq-'+pid);
+  var nm = ne ? ne.value.trim() : '';
+  var qty = parseInt(qe ? qe.value : '1') || 1;
+  if (!nm) return;
+  for (var k=0;k<prods.length;k++) {
+    if (prods[k].id===pid) { prods[k].parts.push({name:nm, qty:qty, have:false}); break; }
+  }
+  ds(); render();
+  var f = document.getElementById('pn-'+pid);
+  if (f) { f.value = ''; f.focus(); }
+}
+function openMo() { document.getElementById('mo').classList.add('open'); setTimeout(function(){ document.getElementById('nn').focus(); },100); }
+function closeMo() { document.getElementById('mo').classList.remove('open'); document.getElementById('nn').value = ''; }
+function addP() {
+  var nm = document.getElementById('nn').value.trim();
+  var cat = document.getElementById('nc').value;
+  if (!nm) { document.getElementById('nn').focus(); return; }
+  prods.unshift({id:uid(), n:nm, c:cat, parts:[]});
   ds(); closeMo(); activeCat='all'; buildCats(); render();
 }
-
-// Register service worker
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
 }
-
-load();
+tryLoad();
 </script>
 </body>
 </html>
